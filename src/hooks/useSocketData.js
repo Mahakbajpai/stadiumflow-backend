@@ -14,7 +14,9 @@ export function useSocketData() {
 
   useEffect(() => {
     // Initialize Socket Connection
-    const socket = io(BACKEND_URL);
+    const socket = io("https://stadiumflow-backend.onrender.com", {
+      transports: ["websocket"]
+    });
 
     socket.on('connect', () => {
       setIsConnected(true);
