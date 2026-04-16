@@ -40,7 +40,7 @@ const StadiumMap = ({ zones }) => {
   };
 
   return (
-    <div className="glass-panel p-6 flex flex-col h-[500px]">
+    <div id="stadium-map" className="glass-panel p-6 flex flex-col h-[500px]">
       <div className="flex items-center justify-between mb-4">
          <div className="flex items-center gap-3">
            <div className="p-2 bg-purple-100 text-purple-600 rounded-lg">

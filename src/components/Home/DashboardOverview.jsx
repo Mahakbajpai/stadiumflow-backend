@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Users, Clock, Zap } from 'lucide-react';
 
-const DashboardOverview = ({ globalStats }) => {
+const DashboardOverview = ({ globalStats, zones }) => {
   const occupancyPercentage = Math.round((globalStats.totalAttendees / globalStats.maxCapacity) * 100);
+
+  const recommendation = useMemo(() => {
+    if (!zones) return null;
+    const gates = Object.values(zones).filter(z => z.type === 'gate');
+    if (gates.length < 2) return null;
+    const sortedGates = [...gates].sort((a, b) => b.density - a.density);
+    const busiestGate = sortedGates[0];
+    const quietestGate = sortedGates[sortedGates.length - 1];
+
+    if (busiestGate.density > 40) {
+      return `System is actively re-routing foot traffic from ${busiestGate.name} to ${quietestGate.name}.`;
+    }
+    return 'Traffic flow is optimal. No active re-routing needed at this time.';
+  }, [zones]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -38,14 +52,22 @@ const DashboardOverview = ({ globalStats }) => {
         </div>
       </div>
 
-      <div className="glass-panel p-6 bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-float flex flex-col justify-between">
-         <div>
-            <h3 className="font-semibold text-lg">AI Recommendation Engine</h3>
-            <p className="text-sm text-brand-100 mt-1">System is actively re-routing foot traffic from Gate D to Gate B.</p>
+      <div className="glass-panel p-6 bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-float flex flex-col justify-between overflow-hidden relative">
+         <div className="relative z-10">
+            <h3 className="font-semibold text-lg flex items-center gap-2"><Zap size={18} className="text-yellow-400" /> AI Recommendation Engine</h3>
+            <p className="text-sm text-brand-100 mt-2 leading-relaxed">
+               {recommendation || "Analyzing stadium traffic patterns..."}
+            </p>
          </div>
-         <button className="mt-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm self-start px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+         <button 
+            onClick={() => document.getElementById('stadium-map')?.scrollIntoView({ behavior: 'smooth' })}
+            className="mt-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm self-start px-4 py-2 rounded-lg text-sm font-medium transition-colors relative z-10"
+         >
             View Traffic Map
          </button>
+         <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
+            <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+         </div>
       </div>
     </div>
   );

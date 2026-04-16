@@ -30,3 +30,11 @@
 body {
   transition: background-color 0.3s ease;
 }
+
+@keyframes routeDash {
+  0% { stroke-dashoffset: 8; }
+  100% { stroke-dashoffset: 0; }
+}
+.animate-route-dash {
+  animation: routeDash 1s linear infinite;
+}

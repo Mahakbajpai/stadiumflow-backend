@@ -16,7 +16,7 @@ const Home = () => {
 
   return (
     <div className="space-y-6">
-      <DashboardOverview globalStats={stadiumState.global} />
+      <DashboardOverview globalStats={stadiumState.global} zones={stadiumState.zones} />
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main interactive map takes up 2 columns on large screens */}
