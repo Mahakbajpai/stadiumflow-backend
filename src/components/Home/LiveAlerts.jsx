@@ -23,7 +23,7 @@ const LiveAlerts = ({ alerts }) => {
               <ShieldAlert size={18} className="text-yellow-600 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-slate-800">{alert.message}</p>
-                <span className="text-xs text-slate-500 mt-1 block">{alert.time}</span>
+                <span className="text-xs text-slate-500 mt-1 block">{new Date(alert.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
             </div>
           ))

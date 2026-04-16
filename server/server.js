@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import { tickSimulation, getApiCrowdState, getApiAlerts, getApiPredictions } from './sockets/handler.js';
+import { tickSimulation, getApiCrowdState, getApiAlerts, getApiPredictions, getApiUsers, handleUserJoin, handleUserMove, handleUserDisconnect } from './sockets/handler.js';
 
 const app = express();
 app.use(cors({ origin: '*' }));
@@ -35,9 +35,20 @@ io.on('connection', (socket) => {
   socket.emit('crowdUpdate', getApiCrowdState());
   socket.emit('alertUpdate', getApiAlerts());
   socket.emit('predictionUpdate', getApiPredictions());
+  socket.emit('usersUpdate', getApiUsers());
+
+  // Social Features
+  socket.on('userJoin', (userData) => {
+    handleUserJoin(socket, userData, io);
+  });
+
+  socket.on('userMove', (locationData) => {
+    handleUserMove(socket, locationData, io);
+  });
 
   socket.on('disconnect', () => {
     console.log(`Client disconnected: ${socket.id}`);
+    handleUserDisconnect(socket.id, io);
   });
 });
 

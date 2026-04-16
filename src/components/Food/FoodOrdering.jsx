@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Plus, Coffee } from 'lucide-react';
+import { useAppContext } from '../../context/AppContext.jsx';
 
 const MENU = [
   { id: 1, name: 'Stadium Burger Combo', price: 15, time: '5m' },
@@ -9,6 +10,7 @@ const MENU = [
 ];
 
 const FoodOrdering = () => {
+  const { placeOrder } = useAppContext();
   const [cart, setCart] = useState([]);
   const [checkingOut, setCheckingOut] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -22,6 +24,7 @@ const FoodOrdering = () => {
   const handleCheckout = () => {
      setCheckingOut(true);
      setTimeout(() => {
+        placeOrder(cart, total);
         setCheckingOut(false);
         setSuccess(true);
         setCart([]);

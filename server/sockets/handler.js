@@ -4,6 +4,7 @@ import { getStadiumState, getAlerts, getPredictions } from '../utils/simulation.
 let stadiumState = getStadiumState();
 let activeAlerts = getAlerts();
 let activePrediction = getPredictions();
+let activeUsers = {};
 
 export const determineStatus = (density) => {
   if (density < 50) return 'low';
@@ -51,7 +52,7 @@ export const tickSimulation = (io) => {
       id: Date.now(),
       message: `High congestion at ${zone.name}. Expect delays.`,
       type: 'warning',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toISOString()
     };
     newAlerts = [newAlert, ...newAlerts].slice(0, 5);
   }
@@ -74,10 +75,39 @@ export const tickSimulation = (io) => {
   io.emit('crowdUpdate', stadiumState);
   io.emit('alertUpdate', activeAlerts);
   io.emit('predictionUpdate', activePrediction);
+  io.emit('usersUpdate', activeUsers);
 
   return stadiumState;
+};
+
+// --- Social Map Methods ---
+export const handleUserJoin = (socket, userData, io) => {
+  activeUsers[socket.id] = {
+    ...userData,
+    id: socket.id,
+    x: 50, // default spawn center
+    y: 90,
+  };
+  io.emit('usersUpdate', activeUsers);
+};
+
+export const handleUserMove = (socket, newLocation, io) => {
+  if (activeUsers[socket.id]) {
+    activeUsers[socket.id].x = newLocation.x;
+    activeUsers[socket.id].y = newLocation.y;
+    activeUsers[socket.id].zoneId = newLocation.zoneId;
+    io.emit('usersUpdate', activeUsers);
+  }
+};
+
+export const handleUserDisconnect = (socketId, io) => {
+  if (activeUsers[socketId]) {
+    delete activeUsers[socketId];
+    io.emit('usersUpdate', activeUsers);
+  }
 };
 
 export const getApiCrowdState = () => stadiumState;
 export const getApiAlerts = () => activeAlerts;
 export const getApiPredictions = () => activePrediction;
+export const getApiUsers = () => activeUsers;

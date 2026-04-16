@@ -11,10 +11,16 @@ export function useSocketData() {
   const [alerts, setAlerts] = useState([]);
   const [prediction, setPrediction] = useState({ nextHotspot: null, expectedIn: 0 });
   const [isConnected, setIsConnected] = useState(false);
+  const [activeUsers, setActiveUsers] = useState({});
+  const [socketInstance, setSocketInstance] = useState(null);
 
   useEffect(() => {
+    const socketUrl = window.location.hostname === "localhost" 
+      ? 'http://localhost:3001' 
+      : 'https://stadiumflow-backend.onrender.com';
+      
     // Initialize Socket Connection
-    const socket = io("https://stadiumflow-backend.onrender.com", {
+    const socket = io(socketUrl, {
       transports: ["websocket"]
     });
 
@@ -38,10 +44,28 @@ export function useSocketData() {
       setPrediction(data);
     });
 
+    socket.on('usersUpdate', (data) => {
+      setActiveUsers(data);
+    });
+
+    setSocketInstance(socket);
+
     return () => {
       socket.disconnect();
     };
   }, []);
 
-  return { stadiumState, alerts, prediction, isConnected };
+  const joinStadium = (userData) => {
+    if (socketInstance) {
+      socketInstance.emit('userJoin', userData);
+    }
+  };
+
+  const moveAvatar = (locationData) => {
+    if (socketInstance) {
+      socketInstance.emit('userMove', locationData);
+    }
+  };
+
+  return { stadiumState, alerts, prediction, isConnected, activeUsers, joinStadium, moveAvatar };
 }
