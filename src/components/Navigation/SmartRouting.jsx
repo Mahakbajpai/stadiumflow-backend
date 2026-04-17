@@ -16,7 +16,7 @@ const zonePositionMap = {
 
 const userPos = { x: 50, y: 95 }; // Fixed starting position near bottom center
 
-const SmartRouting = ({ zones }) => {
+const SmartRouting = ({ zones, activeUsers = {}, currentUser }) => {
   const [destination, setDestination] = useState('');
   const [route, setRoute] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -28,26 +28,44 @@ const SmartRouting = ({ zones }) => {
     
     // Simulate AI routing calculation
     setTimeout(() => {
-       const destZone = Object.values(zones).find(z => z.id === destination);
-       if (!destZone) {
-          setLoading(false);
-          return;
-       }
+       if (destination.startsWith('user_')) {
+          const userId = destination.replace('user_', '');
+          const destUser = activeUsers[userId];
+          if (!destUser) {
+             setLoading(false);
+             return;
+          }
+          setRoute({
+             id: destination,
+             destination: destUser.username,
+             time: '3 mins',
+             pos: { x: destUser.x, y: destUser.y },
+             via: 'Direct Track',
+             crowded: false
+          });
+       } else {
+          const destZone = Object.values(zones).find(z => z.id === destination);
+          if (!destZone) {
+             setLoading(false);
+             return;
+          }
 
-       // Mock logic finding alternative if crowded
-       const isCrowded = destZone.status === 'high';
-       let via = 'Concourse A';
-       if (isCrowded) {
-           via = 'Lower Service Tunnel (AI Re-routed)';
-       }
+          // Mock logic finding alternative if crowded
+          const isCrowded = destZone.status === 'high';
+          let via = 'Concourse A';
+          if (isCrowded) {
+              via = 'Lower Service Tunnel (AI Re-routed)';
+          }
 
-       setRoute({
-          id: destination,
-          destination: destZone.name,
-          time: isCrowded ? '12 mins' : '5 mins',
-          via: via,
-          crowded: isCrowded
-       });
+          setRoute({
+             id: destination,
+             destination: destZone.name,
+             time: isCrowded ? '12 mins' : '5 mins',
+             pos: zonePositionMap[destination] || { x: 50, y: 50 },
+             via: via,
+             crowded: isCrowded
+          });
+       }
        setLoading(false);
     }, 800);
   };
@@ -86,6 +104,15 @@ const SmartRouting = ({ zones }) => {
                  <option value="restroom2">Restroom South</option>
                  <option value="restroom3">Restroom East</option>
               </optgroup>
+              {Object.keys(activeUsers).length > 1 && (
+                <optgroup label="Other Attendees">
+                   {Object.entries(activeUsers)
+                     .filter(([id, u]) => u.username !== currentUser?.username)
+                     .map(([id, u]) => (
+                      <option key={`user_${id}`} value={`user_${id}`}>{u.username}</option>
+                   ))}
+                </optgroup>
+              )}
             </select>
           </div>
 
@@ -131,7 +158,7 @@ const SmartRouting = ({ zones }) => {
                          <rect x="35" y="25" width="30" height="50" rx="15" fill="#e2e8f0" />
                          
                          <path 
-                            d={`M ${userPos.x} ${userPos.y} Q 50 50 ${zonePositionMap[route.id]?.x || 50} ${zonePositionMap[route.id]?.y || 50}`} 
+                            d={`M ${userPos.x} ${userPos.y} Q 50 50 ${route.pos?.x || 50} ${route.pos?.y || 50}`} 
                             fill="none" 
                             stroke="url(#routeGradient)" 
                             strokeWidth="3.5" 
@@ -142,7 +169,7 @@ const SmartRouting = ({ zones }) => {
                          {/* Origin Point */}
                          <circle cx={userPos.x} cy={userPos.y} r="3.5" fill="#3b82f6" />
                          {/* Destination Point */}
-                         <circle cx={zonePositionMap[route.id]?.x || 50} cy={zonePositionMap[route.id]?.y || 50} r="4" fill="#ef4444" className="animate-pulse" />
+                         <circle cx={route.pos?.x || 50} cy={route.pos?.y || 50} r="4" fill="#ef4444" className="animate-pulse" />
                       </svg>
                       <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-white/80 rounded text-[9px] text-slate-500 font-bold uppercase tracking-wider backdrop-blur-sm border border-slate-200 shadow-sm">AI Active Route</div>
                    </div>

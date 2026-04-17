@@ -51,7 +51,7 @@ export const tickSimulation = (io) => {
       id: Date.now(),
       message: `High congestion at ${zone.name}. Expect delays.`,
       type: 'warning',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toISOString()
     };
     newAlerts = [newAlert, ...newAlerts].slice(0, 5);
   }
@@ -78,6 +78,33 @@ export const tickSimulation = (io) => {
   return stadiumState;
 };
 
+let activeUsers = {};
+
+export const handleUserJoin = (socket, userData, io) => {
+  activeUsers[socket.id] = {
+    ...userData,
+    x: 50, // default position
+    y: 50,
+  };
+  io.emit('usersUpdate', activeUsers);
+};
+
+export const handleUserMove = (socket, locationData, io) => {
+  if (activeUsers[socket.id]) {
+    activeUsers[socket.id].x = locationData.x;
+    activeUsers[socket.id].y = locationData.y;
+    io.emit('usersUpdate', activeUsers);
+  }
+};
+
+export const handleUserDisconnect = (socketId, io) => {
+  if (activeUsers[socketId]) {
+    delete activeUsers[socketId];
+    io.emit('usersUpdate', activeUsers);
+  }
+};
+
 export const getApiCrowdState = () => stadiumState;
 export const getApiAlerts = () => activeAlerts;
 export const getApiPredictions = () => activePrediction;
+export const getApiUsers = () => activeUsers;
