@@ -4,8 +4,8 @@ A real-time smart stadium experience and crowd management platform. Built exclus
 
 ## 🚀 Live Demo & Deployment Note to Judges
 
-**Live Frontend (Vercel):** [Insert your Vercel URL here]
-**Live Backend (Render):** [Insert your Render URL here]
+**Live Frontend (Vercel):** [https://stadiumflow-frontend.vercel.app/]
+**Live Backend (Render):** [https://stadiumflow-backend.onrender.com]
 
 > **⚠️ Important Note regarding Google Cloud Run Deployment:**
 > Due to strict RBI (Reserve Bank of India) regulations concerning automatic recurring internet payments, establishing a new Google Cloud Platform billing account currently requires an upfront verification deposit of ₹1000 on an authorizing credit/debit card. Because of this banking limitation, I encountered a hard barrier deploying to Cloud Run. However, the project's architecture is fully cloud-ready, and I have successfully deployed the exact identical production build to Vercel (Frontend) and Render (Backend). Thank you for understanding, and I hope you enjoy the live project!
