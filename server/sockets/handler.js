@@ -13,11 +13,13 @@ export const determineStatus = (density) => {
 };
 
 const randomFluctuation = (current, maxDiff) => {
-  const diff = Math.floor(Math.random() * maxDiff * 2) - maxDiff;
-  let next = current + diff;
+  const diff = Math.floor(Math.random() * (maxDiff * 2 + 1)) - maxDiff;
+  // Add a slight restoring force towards 50 to prevent getting stuck at edges
+  const meanReversion = (50 - current) * 0.05;
+  let next = current + diff + meanReversion;
   if (next < 5) next = 5;
   if (next > 100) next = 100;
-  return next;
+  return Math.floor(next);
 };
 
 export const tickSimulation = (io) => {
