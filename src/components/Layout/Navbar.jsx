@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { RadioReceiver, UserCircle, LayoutDashboard, Settings, Search, Trash2, LogOut } from 'lucide-react';
+import { RadioReceiver, UserCircle, Settings, Search, Trash2, LogOut } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext.jsx';
 import { AvatarSVG } from '../Auth/AuthModal.jsx';
+
+export const sanitizeInput = (str) => {
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+};
 
 const Navbar = () => {
   const { 
@@ -34,7 +40,7 @@ const Navbar = () => {
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-800">StadiumFlow<span className="text-brand">AI</span></h1>
           <div className="flex items-center gap-2">
-             <span className="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+             <span className="material-icons text-brand text-[10px] animate-pulse">fiber_manual_record</span>
              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Live System Active</span>
           </div>
         </div>
@@ -43,13 +49,13 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-6 font-medium text-slate-600">
         <NavLink to="/" className={({isActive}) => isActive ? "text-brand" : "hover:text-brand transition-colors"}>Attendee View</NavLink>
         <NavLink to="/admin" className={({isActive}) => isActive ? "text-brand flex items-center gap-1" : "hover:text-brand transition-colors flex items-center gap-1"}>
-          <LayoutDashboard size={18} /> Admin Console
+          <span className="material-icons text-[18px]">dashboard</span> Admin Console
         </NavLink>
       </div>
 
       <div className="flex items-center gap-4 relative" ref={menuRef}>
         {!currentUser ? (
-          <button className="flex items-center justify-center p-2 rounded-full text-slate-400 cursor-not-allowed">
+          <button className="flex items-center justify-center p-2 rounded-full text-slate-400 cursor-not-allowed" aria-label="User profile inactive">
             <UserCircle size={28} />
           </button>
         ) : (
@@ -57,6 +63,7 @@ const Navbar = () => {
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center gap-2 px-1 hover:bg-slate-100 rounded-lg transition-colors p-1"
+              aria-label="Open user menu"
             >
               <AvatarSVG color={currentUser.color} styleId={currentUser.styleId} className="w-10 h-10 drop-shadow-sm" />
             </button>
@@ -68,7 +75,7 @@ const Navbar = () => {
                  <div className="p-5 border-b border-slate-100 bg-slate-50 flex items-center gap-4">
                     <AvatarSVG color={currentUser.color} styleId={currentUser.styleId} className="w-14 h-14" />
                     <div>
-                      <h3 className="font-bold text-slate-800 text-lg">{currentUser.username}</h3>
+                      <h3 className="font-bold text-slate-800 text-lg" dangerouslySetInnerHTML={{ __html: sanitizeInput(currentUser.username) }}></h3>
                       <button 
                          onClick={() => { setIsEditingProfile(true); setIsMenuOpen(false); }}
                          className="text-xs text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1 mt-1"
@@ -109,6 +116,7 @@ const Navbar = () => {
                                          onClick={() => cancelOrder(order.id)}
                                          className="text-red-500 hover:text-red-700 p-1"
                                          title="Cancel Order"
+                                         aria-label="Cancel order"
                                       >
                                          <Trash2 size={14} />
                                       </button>

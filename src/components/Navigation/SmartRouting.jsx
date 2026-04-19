@@ -73,8 +73,8 @@ const SmartRouting = ({ zones, activeUsers = {}, currentUser }) => {
   return (
     <div className="glass-panel p-6 flex flex-col">
        <div className="flex items-center gap-3 mb-6">
-         <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
-           <Navigation size={20} />
+         <div className="p-2 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center" style={{ width: '36px', height: '36px' }}>
+           <span className="material-icons text-[20px]">directions</span>
          </div>
          <h3 className="text-lg font-bold text-slate-800">Smart Navigation</h3>
        </div>
@@ -173,6 +173,15 @@ const SmartRouting = ({ zones, activeUsers = {}, currentUser }) => {
                       </svg>
                       <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-white/80 rounded text-[9px] text-slate-500 font-bold uppercase tracking-wider backdrop-blur-sm border border-slate-200 shadow-sm">AI Active Route</div>
                    </div>
+                   
+                   <a 
+                      href="https://maps.google.com/?q=Wembley+Stadium"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full mt-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl font-medium transition-colors flex items-center justify-center text-sm"
+                   >
+                      Get directions in Google Maps
+                   </a>
                 </div>
              </div>
           </div>
@@ -182,4 +191,3 @@ const SmartRouting = ({ zones, activeUsers = {}, currentUser }) => {
 };
 
 export default SmartRouting;
-

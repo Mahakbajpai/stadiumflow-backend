@@ -9,8 +9,8 @@ const WaitTimes = ({ zones }) => {
   return (
     <div className="glass-panel p-6">
        <div className="flex items-center gap-3 mb-6">
-         <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
-           <Timer size={20} />
+         <div className="p-2 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center" style={{ width: '36px', height: '36px' }}>
+           <span className="material-icons text-[20px]">schedule</span>
          </div>
          <h3 className="text-lg font-bold text-slate-800">Live AI Wait Times</h3>
        </div>
@@ -29,7 +29,7 @@ const WaitTimes = ({ zones }) => {
                     zone.status === 'low' ? <TrendingDown size={16} className="text-stadium-low" /> :
                     <Minus size={16} className="text-stadium-medium" />}
                    
-                   <div className={clsx(
+                   <div data-waittime="true" className={clsx(
                       "px-3 py-1.5 rounded-lg text-sm font-bold min-w-[70px] text-center shadow-sm",
                       zone.status === 'high' ? 'bg-stadium-high text-white' : 
                       zone.status === 'medium' ? 'bg-yellow-100 text-yellow-800' : 

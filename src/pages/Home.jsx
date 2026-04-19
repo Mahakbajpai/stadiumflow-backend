@@ -34,7 +34,7 @@ const Home = () => {
   }
 
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-6 relative" data-view="attendee">
       {(!currentUser || isEditingProfile) && <AuthModal onJoin={handleJoin} />}
       
       <DashboardOverview globalStats={stadiumState.global} zones={stadiumState.zones} />
@@ -64,6 +64,29 @@ const Home = () => {
          <SmartRouting zones={stadiumState.zones} activeUsers={activeUsers} currentUser={currentUser} />
          <WaitTimes zones={stadiumState.zones} />
          <FoodOrdering />
+         
+         <div className="glass-panel p-6 flex flex-col">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Venue Location</h3>
+            <div className="flex-1 min-h-[220px]">
+               <iframe
+                 src="https://maps.google.com/maps?q=Wembley+Stadium&amp;output=embed"
+                 width="100%"
+                 height="220"
+                 style={{ borderRadius: '12px', border: 0 }}
+                 loading="lazy"
+                 title="Stadium location map"
+                 aria-label="Google Maps showing stadium location"
+               ></iframe>
+            </div>
+            <a 
+               href="https://maps.google.com/?q=Wembley+Stadium"
+               target="_blank"
+               rel="noopener noreferrer"
+               className="w-full mt-4 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-medium transition-colors flex items-center justify-center text-sm gap-2 text-center"
+            >
+               Open in Google Maps
+            </a>
+         </div>
       </div>
     </div>
   );

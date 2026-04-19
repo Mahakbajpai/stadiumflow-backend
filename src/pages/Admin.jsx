@@ -27,7 +27,7 @@ const Admin = () => {
   }, [stadiumState.global.totalAttendees]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-view="admin">
        <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-800">Command Center Intelligence</h2>

@@ -35,8 +35,8 @@ const FoodOrdering = () => {
   return (
     <div className="glass-panel p-6">
        <div className="flex items-center gap-3 mb-6">
-         <div className="p-2 bg-pink-100 text-pink-600 rounded-lg">
-           <Coffee size={20} />
+         <div className="p-2 bg-pink-100 text-pink-600 rounded-lg flex items-center justify-center" style={{ width: '36px', height: '36px' }}>
+           <span className="material-icons text-[20px]">restaurant</span>
          </div>
          <h3 className="text-lg font-bold text-slate-800">In-Seat Express Order</h3>
        </div>
@@ -53,6 +53,7 @@ const FoodOrdering = () => {
                    <button 
                       onClick={() => addToCart(item)}
                       className="p-1.5 bg-slate-100 hover:bg-brand hover:text-white text-slate-600 rounded-lg transition-colors"
+                      aria-label="Add to cart"
                    >
                       <Plus size={18} />
                    </button>
@@ -61,7 +62,7 @@ const FoodOrdering = () => {
           ))}
        </div>
 
-       <div className="border-t border-slate-100 pt-4">
+       <div className="border-t border-slate-100 pt-4" data-cart="true">
           <div className="flex items-center justify-between mb-4">
              <span className="text-sm font-medium text-slate-600">Cart ({cart.length})</span>
              <span className="text-lg font-bold text-slate-800">${total.toFixed(2)}</span>
