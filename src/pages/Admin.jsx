@@ -16,13 +16,20 @@ const Admin = () => {
   }, [stadiumState.zones]);
 
   const historicalData = useMemo(() => {
-    // Mock historical data
+    // Generate dynamic historical times relative to current time
+    const now = new Date();
+    const times = [];
+    for(let i=4; i>=0; i--) {
+        const d = new Date(now.getTime() - i * 30 * 60000);
+        times.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }
+    
     return [
-      { time: '18:00', attendance: 12000 },
-      { time: '18:30', attendance: 25000 },
-      { time: '19:00', attendance: 38000 },
-      { time: '19:30', attendance: 41000 },
-      { time: '20:00', attendance: stadiumState.global.totalAttendees },
+      { time: times[0], attendance: 12000 },
+      { time: times[1], attendance: 25000 },
+      { time: times[2], attendance: 38000 },
+      { time: times[3], attendance: 41000 },
+      { time: times[4], attendance: stadiumState.global.totalAttendees },
     ];
   }, [stadiumState.global.totalAttendees]);
 

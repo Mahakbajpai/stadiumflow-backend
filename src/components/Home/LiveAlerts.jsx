@@ -24,9 +24,16 @@ const LiveAlerts = ({ alerts }) => {
               <div>
                 <p className="text-sm font-medium text-slate-800">{alert.message}</p>
                 <span className="text-xs text-slate-500 mt-1 block">
-                  {isNaN(new Date(alert.time).getTime()) 
-                     ? alert.time 
-                     : new Date(alert.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {(() => {
+                     const alertTime = new Date(alert.time).getTime();
+                     if (isNaN(alertTime)) return alert.time;
+                     
+                     const diffMins = Math.floor((Date.now() - alertTime) / 60000);
+                     if (diffMins < 1) return 'Just now';
+                     if (diffMins < 60) return `${diffMins}m ago`;
+                     
+                     return new Date(alert.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  })()}
                 </span>
               </div>
             </div>
